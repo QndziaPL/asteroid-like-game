@@ -11,13 +11,15 @@ export default class Enemy {
   color = () => {
     switch (this.hp) {
       case 1:
-        return "green";
+        return "#3991a3";
       case 2:
-        return "white";
+        return "#005771";
       case 3:
-        return "yellow";
+        return "#072e92";
       case 4:
-        return "red";
+        return "#4b0089";
+      case 5:
+        return "#ff0000";
     }
   };
 
@@ -29,7 +31,7 @@ export default class Enemy {
     this.context.textAlign = "center";
     this.context.textBaseline = "middle";
     this.context.font = `${this.radius}px Verdana`;
-    this.context.fillStyle = "black";
+    this.context.fillStyle = "white";
     this.context.fillText(this.hp, this.x, this.y);
   }
 

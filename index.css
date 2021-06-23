@@ -5,4 +5,62 @@
 body {
     margin: 0;
     padding: 0;
+    position: relative;
+    background-color: black;
+    font-family: "Century Gothic";
 }
+
+#info {
+    position: fixed;
+    color: white;
+    padding: 20px;
+    user-select: none;
+    font-size: 20px;
+}
+
+#white-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: white;
+    max-width: 500px;
+    min-width: 30vw;
+    /*height: 200px;*/
+    border-radius: 6px;
+}
+
+#start-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    width: 40%;
+    border-radius: 30px;
+    background-color: #186a78;
+    cursor: pointer;
+    font-size: 20px;
+    color: white;
+    transition-duration: 0.1s;
+    margin: 10px;
+}
+
+#start-button:hover {
+    transform: scale(1.1);
+}
+
+#game-over-modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#high-score {
+    text-align: center;
+    color: #007cc1;
+    display: none;
+}
+
+

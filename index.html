@@ -9,7 +9,31 @@
     <title>Document</title>
 </head>
 <body>
+<div id="info">
+    <div>Score: <span id="score">0</span></div>
+    <div>Projectile speed: <span id="projectile-speed">1</span></div>
+    <div>Score speed multiplier: <span id="score-speed-multiplier">1</span></div>
+    <div>Ultimate charges: <span id="ultimate-charges">1</span></div>
+
+
+    <div>
+        <span id="numeric-ultimate"></span>
+        <span id="ultimate-bar" style="color: red; font-size: 30px">
+            </span>
+    </div>
+</div>
+
+<div id="game-over-modal">
+    <div id="white-container">
+        <h1 id="game-over-score">0</h1>
+        <h3 id="high-score"></h3>
+        <div id="start-button">LET'S GO!</div>
+    </div>
+</div>
 <canvas id="canvas"></canvas>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.0/gsap.min.js"
+        integrity="sha512-2fk3Q4NXPYAqIha0glLZ2nluueK43aNoxvijPf53+DgL7UW9mkN+uXc1aEmnZdkkZVvtJZltpRt+JqTWc3TS3Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script type="module" src="index.js"></script>
 <!--<script type="module" src="models/Player.js"></script>-->
 
