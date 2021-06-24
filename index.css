@@ -1,3 +1,5 @@
+@import url("/static/crosshair.png") ;
+
 * {
     box-sizing: border-box;
 }
@@ -8,6 +10,10 @@ body {
     position: relative;
     background-color: black;
     font-family: "Century Gothic";
+}
+
+body {
+    cursor: url("https://drive.google.com/file/d/17vem5EtmBuW0gBbr4_CC682JKh_sMzUC/view?usp=sharing"), crosshair;
 }
 
 #info {

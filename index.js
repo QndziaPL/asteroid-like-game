@@ -23,6 +23,7 @@ const ultimateButtonScoreEl = document.querySelector("#ultimate-button-score");
 const toastMessageEl = document.querySelector("#toast-message");
 const toastContainerEl = document.querySelector("#toast-container");
 const difficultyEl = document.querySelector("#difficulty");
+const critChanceEl = document.querySelector("#crit-chance");
 const secondsToDifficultyIncreaseEl = document.querySelector(
   "#seconds-to-difficulty-increase"
 );
@@ -139,6 +140,7 @@ const showPointsAndInfo = () => {
   ultimateButtonScoreEl.innerHTML = player.ultimateCharges.toString();
   secondsToDifficultyIncreaseEl.innerHTML = seconds;
   difficultyEl.innerHTML = difficulty;
+  critChanceEl.innerHTML = `${player.critChance.toFixed(2) * 100}%`;
 };
 
 let animationId;
@@ -157,6 +159,8 @@ const animate = () => {
   });
   projectiles.forEach((projectile, index) => {
     projectile.update();
+
+    // projectile miss
     if (
       projectile.x + projectile.radius < 0 ||
       projectile.x - projectile.radius > canvas.width ||
@@ -165,6 +169,8 @@ const animate = () => {
     ) {
       setTimeout(() => {
         projectiles.splice(index, 1);
+        player.halveCriticalChance();
+        // player.resetCriticalChance();
       }, 0);
     }
   });
@@ -234,17 +240,33 @@ const createParticlesOnHit = (x, y, enemyRadius) => {
 
 const onEnemyHit = (enemy, enemyIndex, projectileIndex) => {
   projectiles.splice(projectileIndex, 1);
-  if (enemy.hp > 1) {
+  if (enemy.hp === 1) {
+    onDestroyEnemy(enemyIndex);
+    return;
+  }
+  const critRoll = Math.random();
+  const isCrit = player.critChance > critRoll;
+  if (isCrit && enemy.hp < 4) {
+    onDestroyEnemy(enemyIndex);
+    return;
+  }
+  if (isCrit) {
+    enemy.loseHp();
+    enemy.loseHp();
     enemy.loseHp();
   } else {
-    enemies.splice(enemyIndex, 1);
-
-    projectileSpeed += 0.1;
-    score += 10;
-    scoreSpeedModifier = Math.floor(score / 100) * 0.1 + 1;
-    projectileSize = Math.floor(score / 100) + 3;
-    updateUltimateChargeBar();
+    enemy.loseHp();
   }
+};
+
+const onDestroyEnemy = (enemyIndex) => {
+  enemies.splice(enemyIndex, 1);
+  projectileSpeed += 0.1;
+  score += 10;
+  scoreSpeedModifier = Math.floor(score / 100) * 0.1 + 1;
+  projectileSize = Math.floor(score / 100) + 3;
+  updateUltimateChargeBar();
+  player.increaseCriticalChance();
 };
 
 const updateUltimateChargeBar = () => {

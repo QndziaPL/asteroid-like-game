@@ -20,6 +20,10 @@ export default class Enemy {
         return "#4b0089";
       case 5:
         return "#ff0000";
+      case 6:
+        return "#ff00fa";
+      default:
+        return "#2a2a2a";
     }
   };
 
