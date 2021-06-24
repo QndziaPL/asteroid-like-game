@@ -5,6 +5,9 @@ export default class Player {
     this.radius = radius;
     this.color = color;
     this.critChance = 0.0;
+    this.bonuses = {
+      shield: 0,
+    };
   }
 
   ultimateCharges = 1;
@@ -28,6 +31,10 @@ export default class Player {
     if (this.critChance < 1) {
       this.critChance += 0.04;
     }
+  }
+
+  getShield() {
+    this.bonuses.shield += 1;
   }
 
   resetCriticalChance() {

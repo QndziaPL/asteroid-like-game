@@ -30,42 +30,62 @@ const secondsToDifficultyIncreaseEl = document.querySelector(
 
 const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
-let player = new Player(centerX, centerY, 15, "#006868");
+
 let clientMouseX = 0;
 let clientMouseY = 0;
 
-let seconds = 20;
-let difficulty = 1;
-
-let projectiles = [];
-let enemies = [];
-let particles = [];
-
-let maxEnemiesHp = 2;
-let projectileSize = 3;
-let projectileSpeed = 1;
 let attackSpeed = 1.4;
+let difficulty = 1;
+let enemies = [];
+let maxEnemiesHp = 2;
+let particles = [];
+let player = new Player(centerX, centerY, 15, "#006868");
+let projectileSize = 3;
+let projectileSpeed = 2;
+let projectiles = [];
 let score = 0;
 let scoreSpeedModifier = 1;
-let ultimateChargeBar = 0;
-
+let seconds = 20;
 let spawnEnemiesIntervalId;
+let ultimateChargeBar = 0;
+let secondsSinceMiss = 0;
 
 const init = () => {
-  player = new Player(centerX, centerY, 15, "#006868");
-  projectiles = [];
-  enemies = [];
-  particles = [];
-
-  seconds = 20;
-  score = 0;
-  difficulty = 1;
-  maxEnemiesHp = 2;
-  projectileSize = 3;
-  projectileSpeed = 1;
   attackSpeed = 1.4;
-  ultimateChargeBar = 0;
+  difficulty = 1;
+  enemies = [];
+  maxEnemiesHp = 2;
+  particles = [];
+  player = new Player(centerX, centerY, 15, "#006868");
+  projectileSize = 3;
+  projectileSpeed = 2;
+  projectiles = [];
+  score = 0;
   scoreSpeedModifier = 1;
+  seconds = 20;
+  ultimateChargeBar = 0;
+  secondsSinceMiss = 0;
+};
+
+const checkBonuses = () => {
+  if (secondsSinceMiss === 10) {
+    secondsSinceMiss = 0;
+  }
+};
+
+let notMissedTimer;
+const startMissedTimer = () => {
+  notMissedTimer = setInterval(() => {
+    secondsSinceMiss++;
+  }, 1000);
+};
+
+const stopMissedTimer = () => {
+  clearInterval(notMissedTimer);
+};
+
+const missedRecently = () => {
+  secondsSinceMiss = 0;
 };
 
 const shootProjectile = (event) => {
@@ -78,13 +98,13 @@ const shootProjectile = (event) => {
     y: Math.sin(angle) * projectileSpeed,
   };
   projectiles.push(
-    new Projectile(c, centerX, centerY, projectileSize, "gold", velocity)
+    new Projectile(c, centerX, centerY, projectileSize, "gold", velocity, false)
   );
 };
 
 const spawnEnemies = () => {
   spawnEnemiesIntervalId = setInterval(() => {
-    const radius = Math.random() * 26 + 4;
+    const radius = Math.random() * 26 + 7;
     const speedModifier = Math.random() * 3;
     let x, y;
     if (Math.random() < 0.5) {
@@ -118,6 +138,7 @@ const endGame = () => {
   gameOverScoreEl.innerHTML = `${score} points`;
   clearInterval(spawnEnemiesIntervalId);
   clearInterval(difficultyTimer);
+  stopMissedTimer();
   cancelAnimationFrame(animationId);
   gameOverModalEl.style.display = "flex";
 };
@@ -149,6 +170,7 @@ const animate = () => {
   c.fillStyle = "rgba(0,0,0,0.1)";
   c.fillRect(0, 0, canvas.width, canvas.height);
   showPointsAndInfo();
+  checkBonuses();
   player.draw(c);
   particles.forEach((particle, index) => {
     if (particle.alpha <= 0) {
@@ -168,9 +190,11 @@ const animate = () => {
       projectile.y - projectile.radius > canvas.height
     ) {
       setTimeout(() => {
+        if (!projectile.partOfUltimate) {
+          player.halveCriticalChance();
+          missedRecently();
+        }
         projectiles.splice(index, 1);
-        player.halveCriticalChance();
-        // player.resetCriticalChance();
       }, 0);
     }
   });
@@ -203,11 +227,19 @@ const ultimateProjectileShot = () => {
       const oneTick = 6.28 / numberOfProjectiles;
       const angle = oneTick * (i + 1);
       const velocity = {
-        x: Math.cos(angle) * projectileSpeed,
-        y: Math.sin(angle) * projectileSpeed,
+        x: (Math.cos(angle) * projectileSpeed) / 2,
+        y: (Math.sin(angle) * projectileSpeed) / 2,
       };
       projectiles.push(
-        new Projectile(c, centerX, centerY, projectileSize, "gold", velocity)
+        new Projectile(
+          c,
+          centerX,
+          centerY,
+          projectileSize,
+          "gold",
+          velocity,
+          true
+        )
       );
     }
     player.useUltimateCharge();
@@ -345,6 +377,7 @@ startButtonEl.addEventListener("click", () => {
   showToast("Let's go!");
   animate();
   spawnEnemies();
+  startMissedTimer();
   timer();
   gameOverModalEl.style.display = "none";
 });
