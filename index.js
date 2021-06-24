@@ -18,6 +18,7 @@ const startButtonEl = document.querySelector("#start-button");
 const gameOverModalEl = document.querySelector("#game-over-modal");
 const gameOverScoreEl = document.querySelector("#game-over-score");
 const highScoreEl = document.querySelector("#high-score");
+const ultimateButtonEl = document.querySelector("#ultimate-button");
 
 const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
@@ -265,3 +266,5 @@ startButtonEl.addEventListener("click", () => {
   spawnEnemies();
   gameOverModalEl.style.display = "none";
 });
+
+ultimateButtonEl.addEventListener("click", ultimateProjectileShot);

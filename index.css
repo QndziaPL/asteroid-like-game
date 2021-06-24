@@ -28,6 +28,8 @@ body {
     min-width: 30vw;
     /*height: 200px;*/
     border-radius: 6px;
+    margin: 30px;
+    padding: 10px;
 }
 
 #start-button {
@@ -65,6 +67,16 @@ body {
 
 #ultimate-info {
 
+}
+
+#ultimate-button {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: orange;
 }
 
 
