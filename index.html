@@ -17,17 +17,20 @@
 
 
     <div>
-        <span id="numeric-ultimate"></span>
+        <span id="numeric-ultimate">0 / 10</span>
         <span id="ultimate-bar" style="color: red; font-size: 30px">
             </span>
     </div>
+    <div>Difficulty: <span id="difficulty">1</span></div>
+    <div>Increases in: <span id="seconds-to-difficulty-increase">20</span></div>
+
 </div>
 
 <div id="game-over-modal">
     <div id="white-container">
         <h1 id="game-over-score">0</h1>
         <h3 id="high-score"></h3>
-        <div id="start-button">LET'S GO!</div>
+        <div id="start-button">START</div>
         <ul id="ultimate-info">
             <li>to use ultimate press space</li>
             <li>higher score - more particles from single ultimate</li>
@@ -36,8 +39,13 @@
     </div>
 </div>
 
-<div id="ultimate-button">
+<div id="toast-container">
+    <div id="toast-message"></div>
+</div>
 
+<div id="ultimate-button">
+<div id="ultimate-button-score">0</div>
+    <div>[ space ]</div>
 </div>
 
 <canvas id="canvas"></canvas>

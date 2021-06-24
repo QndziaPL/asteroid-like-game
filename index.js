@@ -19,19 +19,31 @@ const gameOverModalEl = document.querySelector("#game-over-modal");
 const gameOverScoreEl = document.querySelector("#game-over-score");
 const highScoreEl = document.querySelector("#high-score");
 const ultimateButtonEl = document.querySelector("#ultimate-button");
+const ultimateButtonScoreEl = document.querySelector("#ultimate-button-score");
+const toastMessageEl = document.querySelector("#toast-message");
+const toastContainerEl = document.querySelector("#toast-container");
+const difficultyEl = document.querySelector("#difficulty");
+const secondsToDifficultyIncreaseEl = document.querySelector(
+  "#seconds-to-difficulty-increase"
+);
 
 const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
 let player = new Player(centerX, centerY, 15, "#006868");
+let clientMouseX = 0;
+let clientMouseY = 0;
+
+let seconds = 20;
+let difficulty = 1;
 
 let projectiles = [];
 let enemies = [];
 let particles = [];
 
-const maxEnemiesHp = 5;
+let maxEnemiesHp = 2;
 let projectileSize = 3;
 let projectileSpeed = 1;
-let attackSpeed = 1;
+let attackSpeed = 1.4;
 let score = 0;
 let scoreSpeedModifier = 1;
 let ultimateChargeBar = 0;
@@ -44,18 +56,22 @@ const init = () => {
   enemies = [];
   particles = [];
 
+  seconds = 20;
   score = 0;
+  difficulty = 1;
+  maxEnemiesHp = 2;
   projectileSize = 3;
   projectileSpeed = 1;
-  attackSpeed = 1;
+  attackSpeed = 1.4;
   ultimateChargeBar = 0;
   scoreSpeedModifier = 1;
 };
 
-console.log(enemies, "przeciwnicy");
-
 const shootProjectile = (event) => {
-  const angle = Math.atan2(event.clientY - centerY, event.clientX - centerX);
+  const angle = Math.atan2(clientMouseY - centerY, clientMouseX - centerX);
+
+  // old static version below
+  // const angle = Math.atan2(event.clientY - centerY, event.clientX - centerX);
   const velocity = {
     x: Math.cos(angle) * projectileSpeed,
     y: Math.sin(angle) * projectileSpeed,
@@ -100,6 +116,7 @@ const endGame = () => {
 
   gameOverScoreEl.innerHTML = `${score} points`;
   clearInterval(spawnEnemiesIntervalId);
+  clearInterval(difficultyTimer);
   cancelAnimationFrame(animationId);
   gameOverModalEl.style.display = "flex";
 };
@@ -119,6 +136,9 @@ const showPointsAndInfo = () => {
   ultimateChargesEl.innerHTML = player.ultimateCharges.toString();
   ultimateBarEl.innerHTML = createUltimateChargeBar();
   numericUltimateEl.innerHTML = `${ultimateChargeBar} / 10`;
+  ultimateButtonScoreEl.innerHTML = player.ultimateCharges.toString();
+  secondsToDifficultyIncreaseEl.innerHTML = seconds;
+  difficultyEl.innerHTML = difficulty;
 };
 
 let animationId;
@@ -233,11 +253,17 @@ const updateUltimateChargeBar = () => {
   } else {
     player.getUltimateCharge();
     ultimateChargeBar = 0;
+    showToast("Ultimate pierdolnięcie + 1");
   }
 };
 
 const BASE_SHOOT_TIMEOUT = 300;
 let shootIntervalId;
+
+const handleMouseMove = ({ clientX, clientY }) => {
+  clientMouseX = clientX;
+  clientMouseY = clientY;
+};
 
 const handleMouseEvents = (event) => {
   if (event.type === "mousedown") {
@@ -256,14 +282,48 @@ const handleKeyEvents = (event) => {
   }
 };
 
+const showToast = (message) => {
+  toastMessageEl.innerHTML = message;
+  toastContainerEl.style.display = "flex";
+  setTimeout(() => {
+    toastContainerEl.style.display = "none";
+    toastMessageEl.innerHTML = "";
+  }, 2000);
+};
+
+const increaseDifficulty = () => {
+  difficulty++;
+  maxEnemiesHp++;
+  showToast("Difficulty increased");
+};
+
+const updateTimerLogic = () => {
+  --seconds;
+  if (seconds === 0) {
+    increaseDifficulty();
+    seconds = 20;
+  }
+  // secondsToDifficultyIncreaseEl.innerHTML = seconds;
+};
+
+let difficultyTimer;
+const timer = () => {
+  difficultyTimer = setInterval(() => {
+    updateTimerLogic();
+  }, 1000);
+};
+
 window.addEventListener("mousedown", handleMouseEvents);
 window.addEventListener("mouseup", handleMouseEvents);
 window.addEventListener("keypress", handleKeyEvents);
+window.addEventListener("mousemove", handleMouseMove);
 
 startButtonEl.addEventListener("click", () => {
   init();
+  showToast("Let's go!");
   animate();
   spawnEnemies();
+  timer();
   gameOverModalEl.style.display = "none";
 });
 
