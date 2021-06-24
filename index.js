@@ -243,6 +243,9 @@ const ultimateProjectileShot = () => {
     if (numberOfProjectiles < 5) {
       numberOfProjectiles = 5;
     }
+    if (numberOfProjectiles > 50) {
+      numberOfProjectiles = 50;
+    }
     for (let i = 0; i < numberOfProjectiles; i++) {
       const oneTick = 6.28 / numberOfProjectiles;
       const angle = oneTick * (i + 1);
