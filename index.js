@@ -24,6 +24,8 @@ const toastMessageEl = document.querySelector("#toast-message");
 const toastContainerEl = document.querySelector("#toast-container");
 const difficultyEl = document.querySelector("#difficulty");
 const critChanceEl = document.querySelector("#crit-chance");
+const sinceMissEl = document.querySelector("#since-miss");
+const shieldsEl = document.querySelector("#shields");
 const secondsToDifficultyIncreaseEl = document.querySelector(
   "#seconds-to-difficulty-increase"
 );
@@ -49,6 +51,7 @@ let seconds = 20;
 let spawnEnemiesIntervalId;
 let ultimateChargeBar = 0;
 let secondsSinceMiss = 0;
+let lastUpdatedSecondsSinceMissFor = 0;
 
 const init = () => {
   attackSpeed = 1.4;
@@ -65,11 +68,16 @@ const init = () => {
   seconds = 20;
   ultimateChargeBar = 0;
   secondsSinceMiss = 0;
+  lastUpdatedSecondsSinceMissFor = 0;
 };
 
 const checkBonuses = () => {
-  if (secondsSinceMiss === 10) {
-    secondsSinceMiss = 0;
+  if (lastUpdatedSecondsSinceMissFor === secondsSinceMiss) return;
+  if (secondsSinceMiss > 0 && secondsSinceMiss % 10 === 0) {
+    // secondsSinceMiss = 0;
+    player.getShield();
+    showToast("You obtained shield!");
+    lastUpdatedSecondsSinceMissFor = secondsSinceMiss;
   }
 };
 
@@ -162,6 +170,8 @@ const showPointsAndInfo = () => {
   secondsToDifficultyIncreaseEl.innerHTML = seconds;
   difficultyEl.innerHTML = difficulty;
   critChanceEl.innerHTML = `${player.critChance.toFixed(2) * 100}%`;
+  sinceMissEl.innerHTML = secondsSinceMiss;
+  shieldsEl.innerHTML = player.bonuses.shield;
 };
 
 let animationId;
@@ -202,7 +212,7 @@ const animate = () => {
     enemy.update();
     const playerDist = Math.hypot(player.x - enemy.x, player.y - enemy.y);
     if (playerDist - enemy.radius - player.radius < 1) {
-      endGame();
+      playerHitByEnemy();
     }
     projectiles.forEach((projectile, projectileIndex) => {
       const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
@@ -215,6 +225,16 @@ const animate = () => {
       }
     });
   });
+};
+
+const playerHitByEnemy = (enemyIndex) => {
+  if (player.bonuses.shield > 0) {
+    enemies.splice(enemyIndex, 1);
+    player.useShield();
+    showToast("Shield saved your life");
+    return;
+  }
+  endGame();
 };
 
 const ultimateProjectileShot = () => {

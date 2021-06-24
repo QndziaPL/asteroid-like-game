@@ -13,6 +13,12 @@ export default class Player {
   ultimateCharges = 1;
 
   draw(context) {
+    if (this.bonuses.shield > 0) {
+      context.beginPath();
+      context.arc(this.x, this.y, this.radius + 5, 0, Math.PI * 2, false);
+      context.fillStyle = "gold";
+      context.fill();
+    }
     context.beginPath();
     context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
     context.fillStyle = this.color;
@@ -34,7 +40,12 @@ export default class Player {
   }
 
   getShield() {
-    this.bonuses.shield += 1;
+    this.bonuses.shield++;
+  }
+
+  useShield() {
+    console.log(this.bonuses);
+    this.bonuses.shield--;
   }
 
   resetCriticalChance() {
