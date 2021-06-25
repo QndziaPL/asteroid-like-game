@@ -71,6 +71,7 @@ const init = () => {
   lastUpdatedSecondsSinceMissFor = 0;
 };
 
+//TODO: to move to react
 const checkBonuses = () => {
   if (lastUpdatedSecondsSinceMissFor === secondsSinceMiss) return;
   if (secondsSinceMiss > 0 && secondsSinceMiss % 10 === 0) {
@@ -81,6 +82,7 @@ const checkBonuses = () => {
   }
 };
 
+//TODO: to move to react
 let notMissedTimer;
 const startMissedTimer = () => {
   notMissedTimer = setInterval(() => {
@@ -88,10 +90,12 @@ const startMissedTimer = () => {
   }, 1000);
 };
 
+//TODO: to move to react
 const stopMissedTimer = () => {
   clearInterval(notMissedTimer);
 };
 
+//TODO: to move to react
 const missedRecently = () => {
   secondsSinceMiss = 0;
 };
@@ -237,6 +241,7 @@ const playerHitByEnemy = (enemyIndex) => {
   endGame();
 };
 
+//TODO: to react
 const ultimateProjectileShot = () => {
   if (player.ultimateCharges > 0) {
     let numberOfProjectiles = Math.floor(score / 6);
@@ -353,12 +358,14 @@ const handleMouseEvents = (event) => {
   }
 };
 
+//TODO: to react
 const handleKeyEvents = (event) => {
   if (event.keyCode === 32) {
     ultimateProjectileShot();
   }
 };
 
+//TODO: to react
 const showToast = (message) => {
   toastMessageEl.innerHTML = message;
   toastContainerEl.style.display = "flex";
@@ -374,15 +381,16 @@ const increaseDifficulty = () => {
   showToast("Difficulty increased");
 };
 
+//TODO: to react
 const updateTimerLogic = () => {
   --seconds;
   if (seconds === 0) {
     increaseDifficulty();
     seconds = 20;
   }
-  // secondsToDifficultyIncreaseEl.innerHTML = seconds;
 };
 
+//TODO: to react
 let difficultyTimer;
 const timer = () => {
   difficultyTimer = setInterval(() => {
