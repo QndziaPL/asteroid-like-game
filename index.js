@@ -216,7 +216,7 @@ const animate = () => {
     enemy.update();
     const playerDist = Math.hypot(player.x - enemy.x, player.y - enemy.y);
     if (playerDist - enemy.radius - player.radius < 1) {
-      playerHitByEnemy();
+      playerHitByEnemy(index);
     }
     projectiles.forEach((projectile, projectileIndex) => {
       const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
